@@ -11,6 +11,7 @@ This is a simple Job Application Form project created using HTML and CSS.
 ## Technologies Used
 - HTML
 - CSS
+- JS
 
 ## Live Demo
 https://rampriya2006.github.io/job-application/
