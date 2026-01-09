@@ -1,0 +1,253 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<title>Job Application Form</title>
+
+<style>
+body{
+  margin:0;
+  font-family: Arial, sans-serif;
+  background:url("https://images.unsplash.com/photo-1521737604893-d14cc237f11d") no-repeat center center/cover;
+  min-height:100vh;
+}
+
+/* POPUP MESSAGE */
+#popup{
+  position:fixed;
+  top:20px;
+  left:50%;
+  transform:translateX(-50%);
+  background:white;
+  color:black;
+  padding:15px 25px;
+  border-radius:8px;
+  box-shadow:0 4px 10px rgba(0,0,0,0.3);
+  display:none;
+  z-index:1000;
+}
+
+/* MAIN FORM BOX */
+.container{
+  max-width:650px;
+  background:rgba(255,255,255,0.95);
+  margin:80px auto 30px;
+  padding:30px;
+  border-radius:20px;
+}
+
+h2{
+  text-align:center;
+  margin-bottom:20px;
+}
+
+label{
+  display:block;
+  margin-top:10px;
+  font-weight:bold;
+}
+
+input, select, textarea{
+  width:100%;
+  padding:10px;
+  margin-top:5px;
+  border-radius:6px;
+  border:1px solid #ccc;
+}
+
+.dob{
+  display:flex;
+  gap:10px;
+}
+
+button{
+  margin-top:20px;
+  width:100%;
+  padding:12px;
+  border:none;
+  border-radius:8px;
+  background:green;
+  color:white;
+  font-size:16px;
+  cursor:pointer;
+}
+
+/* TABLE */
+table{
+  width:95%;
+  margin:30px auto;
+  border-collapse:collapse;
+  background:white;
+}
+
+th,td{
+  border:1px solid #ccc;
+  padding:8px;
+  text-align:center;
+}
+
+th{
+  background:#f2f2f2;
+}
+
+.edit{
+  background:#2196f3;
+  color:white;
+  border:none;
+  padding:5px 10px;
+  border-radius:5px;
+}
+
+.delete{
+  background:red;
+  color:white;
+  border:none;
+  padding:5px 10px;
+  border-radius:5px;
+}
+</style>
+</head>
+
+<body>
+
+<div id="popup">Job Application Successfully Submitted ✅</div>
+
+<div class="container">
+<h2>Job Application Form</h2>
+
+<label>Full Name</label>
+<input type="text" id="name">
+
+<label>Email</label>
+<input type="email" id="email">
+
+<label>Phone</label>
+<input type="text" id="phone">
+
+<label>Date of Birth</label>
+<div class="dob">
+  <select id="day"><option>Day</option></select>
+  <select id="month"><option>Month</option></select>
+  <select id="year"><option>Year</option></select>
+</div>
+
+<label>Gender</label>
+<select id="gender">
+  <option value="">Select</option>
+  <option>Male</option>
+  <option>Female</option>
+</select>
+
+<label>Address</label>
+<textarea id="address"></textarea>
+
+<label>Position</label>
+<select id="position">
+  <option>Web Developer</option>
+  <option>Software Tester</option>
+</select>
+
+<label>Highest Qualification</label>
+<select id="qualification">
+  <option>BSc</option>
+  <option>BCA</option>
+</select>
+
+<button onclick="applyJob()">Apply</button>
+</div>
+
+<table id="table">
+<tr>
+  <th>Name</th>
+  <th>Email</th>
+  <th>Phone</th>
+  <th>DOB</th>
+  <th>Gender</th>
+  <th>Address</th>
+  <th>Position</th>
+  <th>Qualification</th>
+  <th>Action</th>
+</tr>
+</table>
+
+<script>
+const day=document.getElementById("day");
+const month=document.getElementById("month");
+const year=document.getElementById("year");
+
+for(let i=1;i<=31;i++) day.innerHTML+=`<option>${i}</option>`;
+["Jan","Feb","Mar","Apr","May","Jun","Jul","Aug","Sep","Oct","Nov","Dec"]
+.forEach(m=>month.innerHTML+=`<option>${m}</option>`);
+for(let i=1980;i<=2025;i++) year.innerHTML+=`<option>${i}</option>`;
+
+let editRow=null;
+
+function applyJob(){
+  const name=document.getElementById("name").value;
+  const email=document.getElementById("email").value;
+  const phone=document.getElementById("phone").value;
+  const dob=day.value+"-"+month.value+"-"+year.value;
+  const gender=document.getElementById("gender").value;
+  const address=document.getElementById("address").value;
+  const position=document.getElementById("position").value;
+  const qualification=document.getElementById("qualification").value;
+
+  if(name===""){
+    alert("Name required");
+    return;
+  }
+
+  if(editRow){
+    editRow.cells[0].innerText=name;
+    editRow.cells[1].innerText=email;
+    editRow.cells[2].innerText=phone;
+    editRow.cells[3].innerText=dob;
+    editRow.cells[4].innerText=gender;
+    editRow.cells[5].innerText=address;
+    editRow.cells[6].innerText=position;
+    editRow.cells[7].innerText=qualification;
+    editRow=null;
+  }else{
+    const table=document.getElementById("table");
+    const row=table.insertRow();
+    row.insertCell(0).innerText=name;
+    row.insertCell(1).innerText=email;
+    row.insertCell(2).innerText=phone;
+    row.insertCell(3).innerText=dob;
+    row.insertCell(4).innerText=gender;
+    row.insertCell(5).innerText=address;
+    row.insertCell(6).innerText=position;
+    row.insertCell(7).innerText=qualification;
+    row.insertCell(8).innerHTML=
+    `<button class="edit" onclick="editRowFun(this)">Edit</button>
+     <button class="delete" onclick="deleteRow(this)">Delete</button>`;
+  }
+
+  showPopup();
+  document.querySelector("form")?.reset();
+}
+
+function editRowFun(btn){
+  editRow=btn.parentElement.parentElement;
+  document.getElementById("name").value=editRow.cells[0].innerText;
+  document.getElementById("email").value=editRow.cells[1].innerText;
+  document.getElementById("phone").value=editRow.cells[2].innerText;
+  document.getElementById("gender").value=editRow.cells[4].innerText;
+  document.getElementById("address").value=editRow.cells[5].innerText;
+}
+
+function deleteRow(btn){
+  if(confirm("Are you sure to delete?")){
+    btn.parentElement.parentElement.remove();
+  }
+}
+
+function showPopup(){
+  const p=document.getElementById("popup");
+  p.style.display="block";
+  setTimeout(()=>p.style.display="none",2000);
+}
+</script>
+
+</body>
+</html>
